@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Agent-Class: com.simplerasp.RaspAgent
+Premain-Class: com.simplerasp.RaspAgent
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
