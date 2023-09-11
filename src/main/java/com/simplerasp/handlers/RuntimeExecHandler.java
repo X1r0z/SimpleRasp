@@ -8,6 +8,7 @@ import sun.misc.IOUtils;
 
 @RaspHandler(className = "java.lang.Runtime", methodName = "exec", parameterTypes = {String.class})
 public class RuntimeExecHandler {
+
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
         System.out.println("before");
@@ -21,7 +22,7 @@ public class RuntimeExecHandler {
     }
 
     @RaspAfter
-    public static Object handlerAfter(Object obj, Object result) throws Exception{
+    public static Object handleAfter(Object obj, Object result) throws Exception{
         System.out.println("after");
 
         Process p = (Process) result;

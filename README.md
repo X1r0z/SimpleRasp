@@ -22,7 +22,7 @@ Simple Java Rasp
 
 `@RaspAfter` 标记一个在目标方法 return 之前进行处理的方法, 对应 Javaassist 中的 insertAfter
 
-方法签名: `public static Object handlerAfter(Object obj, Object result)`
+方法签名: `public static Object handleAfter(Object obj, Object result)`
 
 - obj: 同上
 - result: 目标方法 return 的值, 如果方法返回类型为 void, 则该值为 null
@@ -42,6 +42,7 @@ import sun.misc.IOUtils;
 
 @RaspHandler(className = "java.lang.Runtime", methodName = "exec", parameterTypes = {String.class})
 public class RuntimeExecHandler {
+
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
         System.out.println("before");
@@ -55,7 +56,7 @@ public class RuntimeExecHandler {
     }
 
     @RaspAfter
-    public static Object handlerAfter(Object obj, Object result) throws Exception{
+    public static Object handleAfter(Object obj, Object result) throws Exception{
         System.out.println("after");
 
         Process p = (Process) result;
@@ -79,6 +80,7 @@ import com.simplerasp.exceptions.RaspException;
 
 @RaspHandler(className = "java.lang.ProcessBuilder", isConstructor = true, parameterTypes = {String[].class})
 public class ProcessBuilderHandler {
+
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
         System.out.println("before");
