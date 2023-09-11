@@ -14,7 +14,7 @@ public class ProcessBuilderHandler {
         String cmd = String.join(" ", (String[])params[0]);
         System.out.println("try to exec: " + cmd);
         if (cmd.contains("Calculator")) {
-            throw new RaspException("Reject malicious command execution attempts");
+            throw new RaspException("Reject malicious command execution attempt");
         }
         return params;
     }

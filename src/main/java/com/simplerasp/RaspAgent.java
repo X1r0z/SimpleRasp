@@ -48,7 +48,7 @@ public class RaspAgent {
                 }
             }
 
-            // 获取 RaspHandler 注解的信息
+            // 获取 @RaspHandler 注解的信息
             String className = handlerAnnotation.className();
             String methodName = handlerAnnotation.methodName();
             boolean isConstructor = handlerAnnotation.isConstructor();
