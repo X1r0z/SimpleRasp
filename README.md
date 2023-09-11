@@ -19,6 +19,7 @@ Simple Java Rasp
 
 - obj: 当目标方法为非静态方法时, 该值为目标对象本身 (this), 为静态方法时该值为 null
 - params: 目标方法的参数列表
+- 返回值: 默认为 params, 用于替代目标方法原来的参数
 
 `@RaspAfter` 标记一个在目标方法 return 之前进行处理的方法, 对应 Javaassist 中的 insertAfter
 
@@ -26,6 +27,7 @@ Simple Java Rasp
 
 - obj: 同上
 - result: 目标方法 return 的值, 如果方法返回类型为 void, 则该值为 null
+- 返回值: 默认为 result, 用于替代目标方法原来的返回值
 
 ## Demo
 
@@ -89,6 +91,34 @@ public class ProcessBuilderHandler {
         System.out.println("try to exec: " + cmd);
         if (cmd.contains("Calculator")) {
             throw new RaspException("Reject malicious command execution attempts");
+        }
+        return params;
+    }
+}
+```
+
+拦截 Log4j2 JNDI 注入
+
+```java
+package com.simplerasp.handlers;
+
+import com.simplerasp.annotations.RaspBefore;
+import com.simplerasp.annotations.RaspHandler;
+import com.simplerasp.exceptions.RaspException;
+
+@RaspHandler(className = "org.apache.logging.log4j.core.net.JndiManager", methodName = "lookup", parameterTypes = {String.class})
+public class JndiManagerLookupHandler {
+
+    @RaspBefore
+    public static Object[] handleBefore(Object obj, Object[] params) {
+        System.out.println("before");
+
+        String name = (String) params[0];
+        String[] blacklist = new String[]{"ldap", "jndi"};
+        for (String s : blacklist) {
+            if (name.toLowerCase().contains(s)) {
+                throw new RaspException("Reject malicious jndi lookup attempt");
+            }
         }
         return params;
     }
