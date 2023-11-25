@@ -124,9 +124,3 @@ public class JndiManagerLookupHandler {
     }
 }
 ```
-
-## License
-
-Modified some code from the following repos
-
-[ronmamo/reflections](https://github.com/ronmamo/reflections)
