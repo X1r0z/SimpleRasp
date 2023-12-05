@@ -1,13 +1,10 @@
 package com.simplerasp;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import com.simplerasp.annotations.RaspAfter;
 import com.simplerasp.annotations.RaspBefore;
 import com.simplerasp.annotations.RaspHandler;
 import org.reflections.Reflections;
 import org.reflections.scanners.*;
-import org.slf4j.LoggerFactory;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -19,9 +16,6 @@ import java.util.jar.JarFile;
 public class RaspAgent {
     public static void premain(String args, Instrumentation inst) throws Exception {
         System.out.println("premain");
-
-        Logger root = (Logger) LoggerFactory.getLogger("org.reflections");
-        root.setLevel(Level.OFF);
 
         // 解决双亲委派问题, 使得 Hook 使用 BootstrapClassLoader 加载的类时, 能够正常加载到我们自定义的 handler
         String jarPath = RaspAgent.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -59,8 +53,16 @@ public class RaspAgent {
             boolean isConstructor = handlerAnnotation.isConstructor();
             Class[] parameterTypes = handlerAnnotation.parameterTypes();
 
-            // 在 transform 前先加载一遍, 防止 Javaassist 获取不到类
-            Class clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+
+            Class clazz;
+
+            try {
+                // 在 transform 前先加载一遍, 防止 Javaassist 获取不到类
+                clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+            } catch (ClassNotFoundException e) {
+                // 当前类不存在, 跳过本次循环
+                continue;
+            }
 
             // 存放 handler 的相关相关信息, 用于 Javaassist
             Map<String, String> handlerMap = new HashMap<>();
