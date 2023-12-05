@@ -43,7 +43,7 @@ public class RaspTransformer implements ClassFileTransformer {
                 }
 
                 // 使用 Javaassist 定位目标方法/构造函数
-                CtBehavior ctBehavior = null;
+                CtBehavior ctBehavior;
 
                 if (this.isConstructor) {
                    ctBehavior = ctClass.getDeclaredConstructor(ctParameterTypes);
