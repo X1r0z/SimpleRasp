@@ -9,8 +9,6 @@ public class JndiManagerLookupHandler {
 
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
-        System.out.println("before");
-
         String name = (String) params[0];
         String[] blacklist = new String[]{"ldap", "jndi"};
         for (String s : blacklist) {
