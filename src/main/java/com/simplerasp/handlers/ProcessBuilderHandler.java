@@ -9,8 +9,6 @@ public class ProcessBuilderHandler {
 
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
-        System.out.println("before");
-
         String cmd = String.join(" ", (String[])params[0]);
         System.out.println("try to exec: " + cmd);
         if (cmd.contains("Calculator")) {

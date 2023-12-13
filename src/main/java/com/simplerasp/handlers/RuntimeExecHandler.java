@@ -11,8 +11,6 @@ public class RuntimeExecHandler {
 
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
-        System.out.println("before");
-
         String cmd = (String) params[0];
         System.out.println("try to exec: " + cmd);
         if (cmd.contains("Calculator")) {
@@ -23,8 +21,6 @@ public class RuntimeExecHandler {
 
     @RaspAfter
     public static Object handleAfter(Object obj, Object result) throws Exception{
-        System.out.println("after");
-
         Process p = (Process) result;
         String output = new String(IOUtils.readAllBytes(p.getInputStream()));
         if (output.contains("uid=")) {

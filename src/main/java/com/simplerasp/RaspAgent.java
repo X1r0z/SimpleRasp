@@ -3,13 +3,13 @@ package com.simplerasp;
 import com.simplerasp.annotations.RaspAfter;
 import com.simplerasp.annotations.RaspBefore;
 import com.simplerasp.annotations.RaspHandler;
+import com.simplerasp.transformers.AfterTransformer;
+import com.simplerasp.transformers.BeforeTransformer;
 import org.reflections.Reflections;
 import org.reflections.scanners.*;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -31,31 +31,29 @@ public class RaspAgent {
         // 遍历使用了 @RaspHandler 注解的类
         for (Class<?> handlerClass : handlerClasses) {
             RaspHandler handlerAnnotation = handlerClass.getAnnotation(RaspHandler.class);
-            String beforeName = null;
-            String afterName = null;
+            Method beforeMethod = null;
+            Method afterMethod = null;
 
             // 寻找使用了 @RaspBefore 注解的方法
             for (Method m : beforeMethods) {
                 if (m.getDeclaringClass() == handlerClass) {
-                    beforeName = m.getName();
+                    beforeMethod = m;
                 }
             }
             // 寻找使用了 @RaspAfter 注解的方法
             for (Method m : afterMethods) {
                 if (m.getDeclaringClass() == handlerClass) {
-                    afterName = m.getName();
+                    afterMethod = m;
                 }
             }
 
             // 获取 @RaspHandler 注解的信息
             String className = handlerAnnotation.className();
             String methodName = handlerAnnotation.methodName();
-            boolean isConstructor = handlerAnnotation.isConstructor();
             Class[] parameterTypes = handlerAnnotation.parameterTypes();
-
+            boolean isConstructor = handlerAnnotation.isConstructor();
 
             Class clazz;
-
             try {
                 // 在 transform 前先加载一遍, 防止 Javaassist 获取不到类
                 clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
@@ -64,25 +62,39 @@ public class RaspAgent {
                 continue;
             }
 
-            // 存放 handler 的相关相关信息, 用于 Javaassist
-            Map<String, String> handlerMap = new HashMap<>();
-            handlerMap.put("className", handlerClass.getName());
-            handlerMap.put("beforeName", beforeName);
-            handlerMap.put("afterName", afterName);
-
             // 添加 transformer 并 retransform
-            RaspTransformer transformer = new RaspTransformer(className, methodName, isConstructor, parameterTypes);
-            transformer.setHandlerMap(handlerMap);
-            inst.addTransformer(transformer, true);
-            inst.retransformClasses(clazz);
+
+            if (beforeMethod != null) {
+                BeforeTransformer transformer = new BeforeTransformer(
+                        className,
+                        methodName,
+                        parameterTypes,
+                        isConstructor,
+                        beforeMethod
+                );
+                inst.addTransformer(transformer, true);
+                inst.retransformClasses(clazz);
+            }
+
+            if (afterMethod != null) {
+                AfterTransformer transformer = new AfterTransformer(
+                        className,
+                        methodName,
+                        parameterTypes,
+                        isConstructor,
+                        afterMethod
+                );
+                inst.addTransformer(transformer, true);
+                inst.retransformClasses(clazz);
+            }
         }
     }
 
-    public static void agentmain(String args, Instrumentation inst) throws Exception {
+    public static void agentmain(String args, Instrumentation inst) {
         System.out.println("agentmain");
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
         System.out.println("main");
     }
 }
