@@ -1,4 +1,4 @@
-package com.simplerasp.exceptions;
+package com.simplerasp.exception;
 
 public class RaspException extends RuntimeException{
     public RaspException(String message) {

@@ -1,14 +1,17 @@
-package com.simplerasp.handlers;
+package com.simplerasp.handler;
 
-import com.simplerasp.annotations.RaspAfter;
-import com.simplerasp.annotations.RaspBefore;
-import com.simplerasp.annotations.RaspHandler;
-import com.simplerasp.exceptions.RaspException;
+import com.simplerasp.annotation.RaspAfter;
+import com.simplerasp.annotation.RaspBefore;
+import com.simplerasp.annotation.RaspHandler;
+import com.simplerasp.exception.RaspException;
 import sun.misc.IOUtils;
 
-@RaspHandler(className = "java.lang.Runtime", methodName = "exec", parameterTypes = {String.class})
+@RaspHandler(
+        className = "java.lang.Runtime",
+        methodName = "exec",
+        parameterTypes = {String.class}
+)
 public class RuntimeExecHandler {
-
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
         String cmd = (String) params[0];

@@ -1,8 +1,9 @@
-package com.simplerasp.transformers;
+package com.simplerasp.transformer;
 
 import javassist.*;
 
 import java.lang.instrument.ClassFileTransformer;
+import java.lang.reflect.Modifier;
 import java.security.ProtectionDomain;
 
 public abstract class BaseTransformer implements ClassFileTransformer {
@@ -37,17 +38,36 @@ public abstract class BaseTransformer implements ClassFileTransformer {
                 }
 
                 // 使用 Javaassist 定位目标方法/构造函数
-                CtBehavior ctBehavior;
                 if (this.isConstructor) {
-                   ctBehavior = ctClass.getDeclaredConstructor(ctParameterTypes);
+                    CtBehavior ctBehavior = ctClass.getDeclaredConstructor(ctParameterTypes);
+                    this.raspTransform(ctClass, ctBehavior);
                 } else {
-                    ctBehavior = ctClass.getDeclaredMethod(this.methodName, ctParameterTypes);
+                    CtBehavior ctBehavior = ctClass.getDeclaredMethod(this.methodName, ctParameterTypes);
+
+                    // Hook native 方法
+                    if (Modifier.isNative(ctBehavior.getModifiers())) {
+                        CtMethod ctMethod = (CtMethod) ctBehavior;
+
+                        // 使原有的 native 方法名加上 prefix
+                        CtMethod renameCtNativeMethod = CtNewMethod.copy(ctMethod,ctClass, null);
+                        renameCtNativeMethod.setName("RASP_" + ctMethod.getName());
+                        ctClass.removeMethod(ctMethod);
+                        ctClass.addMethod(renameCtNativeMethod);
+
+                        // 加入同名 hook 方法, 调用实际带 prefix 的 native 方法
+                        CtMethod hookCtNativeMethod = CtNewMethod.copy(ctMethod,ctClass, null);
+                        hookCtNativeMethod.setModifiers(ctMethod.getModifiers() &~ Modifier.NATIVE);
+                        hookCtNativeMethod.setBody("{ return " + renameCtNativeMethod.getName() + "($$); }");
+                        ctClass.addMethod(hookCtNativeMethod);
+
+                        // transform 时传入同名的 hook 方法
+                        this.raspTransform(ctClass, hookCtNativeMethod);
+                    } else {
+                        this.raspTransform(ctClass, ctBehavior);
+                    }
                 }
 
-                // 修改字节码, 插入 handler
-                this.raspTransform(ctClass, ctBehavior);
                 ctClass.detach();
-
                 return ctClass.toBytecode();
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,12 +1,15 @@
-package com.simplerasp.handlers;
+package com.simplerasp.handler;
 
-import com.simplerasp.annotations.RaspBefore;
-import com.simplerasp.annotations.RaspHandler;
-import com.simplerasp.exceptions.RaspException;
+import com.simplerasp.annotation.RaspBefore;
+import com.simplerasp.annotation.RaspHandler;
+import com.simplerasp.exception.RaspException;
 
-@RaspHandler(className = "org.apache.logging.log4j.core.net.JndiManager", methodName = "lookup", parameterTypes = {String.class})
+@RaspHandler(
+        className = "org.apache.logging.log4j.core.net.JndiManager",
+        methodName = "lookup",
+        parameterTypes = {String.class}
+)
 public class JndiManagerLookupHandler {
-
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
         String name = (String) params[0];
