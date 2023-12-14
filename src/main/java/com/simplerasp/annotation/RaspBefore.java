@@ -1,4 +1,4 @@
-package com.simplerasp.annotations;
+package com.simplerasp.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

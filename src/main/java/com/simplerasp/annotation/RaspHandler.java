@@ -1,4 +1,4 @@
-package com.simplerasp.annotations;
+package com.simplerasp.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 public @interface RaspHandler {
     String className();
     String methodName() default "";
-    boolean isConstructor() default false;
     Class[] parameterTypes();
+    boolean isConstructor() default false;
+    boolean isNative() default false;
 }
