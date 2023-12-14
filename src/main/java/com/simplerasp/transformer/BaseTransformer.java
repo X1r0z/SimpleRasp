@@ -26,7 +26,7 @@ public abstract class BaseTransformer implements ClassFileTransformer {
     public byte[] transform(ClassLoader loader, String _className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) {
         // 匹配 className
         if (this.className.replace(".", "/").equals(_className)) {
-            System.out.println("found target class: " + this.className);
+            System.out.println("Found target class: " + this.className);
             try {
                 ClassPool pool = ClassPool.getDefault();
                 CtClass ctClass = pool.get(this.className);

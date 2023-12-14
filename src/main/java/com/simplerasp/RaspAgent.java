@@ -18,7 +18,7 @@ import java.util.jar.JarFile;
 
 public class RaspAgent {
     public static void premain(String args, Instrumentation inst) throws Exception {
-        System.out.println("premain");
+        System.out.println("Simple RASP is running");
 
         // 解决双亲委派问题, 使得 Hook 使用 BootstrapClassLoader 加载的类时, 能够正常加载到我们自定义的 handler
         String jarPath = RaspAgent.class.getProtectionDomain().getCodeSource().getLocation().getPath();

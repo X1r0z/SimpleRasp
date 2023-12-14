@@ -13,7 +13,7 @@ public class ProcessBuilderHandler {
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
         String cmd = String.join(" ", (String[])params[0]);
-        System.out.println("try to exec: " + cmd);
+        System.out.println("Try to exec: " + cmd);
         if (cmd.contains("Calculator")) {
             throw new RaspException("Reject malicious command execution attempt");
         }
