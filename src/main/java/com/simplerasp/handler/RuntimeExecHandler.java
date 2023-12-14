@@ -15,7 +15,7 @@ public class RuntimeExecHandler {
     @RaspBefore
     public static Object[] handleBefore(Object obj, Object[] params) {
         String cmd = (String) params[0];
-        System.out.println("try to exec: " + cmd);
+        System.out.println("Try to exec: " + cmd);
         if (cmd.contains("Calculator")) {
             throw new RaspException("Reject malicious command execution attempt");
         }
@@ -23,7 +23,7 @@ public class RuntimeExecHandler {
     }
 
     @RaspAfter
-    public static Object handleAfter(Object obj, Object result) throws Exception{
+    public static Object handleAfter(Object obj, Object result) throws Exception {
         Process p = (Process) result;
         String output = new String(IOUtils.readAllBytes(p.getInputStream()));
         if (output.contains("uid=")) {
