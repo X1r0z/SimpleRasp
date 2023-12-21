@@ -74,7 +74,7 @@ public class RaspAgent {
             // 暂时先用 Class.forName 替代, 后续有时间再研究
 //            try {
 //                // 在 transform 前先加载一遍, 防止 Javaassist 获取不到类
-//                // 注意使用 AppClassLoader 加载 class 后无法修改 native 方法
+//                // 注意使用 ClassLoader 加载 native class 后好像无法修改 native 方法?
 //                if(!isNative) Thread.currentThread().getContextClassLoader().loadClass(className);
 //            } catch (ClassNotFoundException e) {
 //                // 当前类不存在, 跳过本次循环
