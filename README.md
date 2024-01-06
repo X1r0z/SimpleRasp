@@ -135,6 +135,8 @@ public class JndiManagerLookupHandler {
 
 拦截 UNIXProcess.forkAndExec 方法
 
+当然 native 方法也支持使用 `@RaspBefore` 和 `@RaspAfter` 注解进行拦截
+
 ```java
 package com.simplerasp.handler;
 
@@ -164,4 +166,30 @@ public class UNIXProcessHandler {
 }
 ```
 
-当然 native 方法也支持使用 `@RaspBefore` 和 `@RaspAfter` 注解进行拦截
+拦截 ObjectInputStream.resolveClass 方法
+
+```java
+package com.simplerasp.handler;
+
+import com.simplerasp.annotation.RaspBefore;
+import com.simplerasp.annotation.RaspHandler;
+import com.simplerasp.exception.RaspException;
+
+import java.io.ObjectStreamClass;
+
+@RaspHandler(
+        className = "java.io.ObjectInputStream",
+        methodName = "resolveClass",
+        parameterTypes = {ObjectStreamClass.class}
+)
+public class ObjectInputStreamHandler {
+    @RaspBefore
+    public static Object[] handleBefore(Object obj, Object[] params) {
+        ObjectStreamClass osc = (ObjectStreamClass) params[0];
+        if (osc.getName().equals("org.apache.commons.collections.functors.InvokerTransformer")) {
+            throw new RaspException("Reject malicious deserialization attempt");
+        }
+        return params;
+    }
+}
+```
