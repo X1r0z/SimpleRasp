@@ -10,16 +10,13 @@ public abstract class BaseTransformer implements ClassFileTransformer {
     protected String className;
     protected String methodName;
     protected Class[] parameterTypes;
-    protected boolean isConstructor;
 
     public BaseTransformer(String className,
                            String methodName,
-                           Class[] parameterTypes,
-                           boolean isConstructor) {
+                           Class[] parameterTypes) {
         this.className = className;
         this.methodName = methodName;
         this.parameterTypes = parameterTypes;
-        this.isConstructor = isConstructor;
     }
 
     @Override
@@ -38,7 +35,7 @@ public abstract class BaseTransformer implements ClassFileTransformer {
                 }
 
                 // 使用 Javaassist 定位目标方法/构造函数
-                if (this.isConstructor) {
+                if (this.methodName.equals("<init>")) {
                     CtBehavior ctBehavior = ctClass.getDeclaredConstructor(ctParameterTypes);
                     this.raspTransform(ctClass, ctBehavior);
                 } else {

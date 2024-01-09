@@ -44,7 +44,6 @@ public class RaspAgent {
             String className = handlerAnnotation.className();
             String methodName = handlerAnnotation.methodName();
             Class[] parameterTypes = handlerAnnotation.parameterTypes();
-            boolean isConstructor = handlerAnnotation.isConstructor();
             boolean isNative = handlerAnnotation.isNative();
 
             Method beforeMethod = null;
@@ -87,8 +86,7 @@ public class RaspAgent {
                 BeforeTransformer transformer = new BeforeTransformer(
                         className,
                         methodName,
-                        parameterTypes,
-                        isConstructor
+                        parameterTypes
                 );
                 transformer.setBeforeMethod(beforeMethod);
                 inst.addTransformer(transformer, true);
@@ -100,8 +98,7 @@ public class RaspAgent {
                 AfterTransformer transformer = new AfterTransformer(
                         className,
                         methodName,
-                        parameterTypes,
-                        isConstructor
+                        parameterTypes
                 );
                 transformer.setAfterMethod(afterMethod);
                 inst.addTransformer(transformer, true);
@@ -113,8 +110,7 @@ public class RaspAgent {
                 ReplaceTransformer transformer = new ReplaceTransformer(
                         className,
                         methodName,
-                        parameterTypes,
-                        isConstructor
+                        parameterTypes
                 );
                 transformer.setReplaceField(replaceField);
                 inst.addTransformer(transformer, true);

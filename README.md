@@ -9,9 +9,8 @@ Simple Java Rasp
 `@RaspHandler` 标记一个 Rasp Handler 处理类, 其参数用于定位被 Hook 的方法或构造函数
 
 - className: 类名
-- methodName: 方法名 (可选)
+- methodName: 方法名 (为 `<init>` 时表示构造函数)
 - parameterTypes: 方法/构造函数的参数类型
-- isConstructor: 是否为构造函数 (默认为 false)
 - isNative: 是否为 native 方法 (默认为 false)
 
 `@RaspBefore` 标记一个对目标方法的参数进行拦截的方法, 对应 Javaassist 中的 insertBefore
@@ -88,7 +87,7 @@ import com.simplerasp.exception.RaspException;
 
 @RaspHandler(
         className = "java.lang.ProcessBuilder",
-        isConstructor = true,
+        methodName = "<init>",
         parameterTypes = {String[].class}
 )
 public class ProcessBuilderHandler {

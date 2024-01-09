@@ -13,9 +13,8 @@ public class AfterTransformer extends BaseTransformer {
 
     public AfterTransformer(String className,
                             String methodName,
-                            Class[] parameterTypes,
-                            boolean isConstructor) {
-        super(className, methodName, parameterTypes, isConstructor);
+                            Class[] parameterTypes) {
+        super(className, methodName, parameterTypes);
     }
 
     public void setAfterMethod(Method afterMethod) {

@@ -11,6 +11,5 @@ public @interface RaspHandler {
     String className();
     String methodName() default "";
     Class[] parameterTypes();
-    boolean isConstructor() default false;
     boolean isNative() default false;
 }
