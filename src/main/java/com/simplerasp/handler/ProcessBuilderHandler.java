@@ -6,7 +6,7 @@ import com.simplerasp.exception.RaspException;
 
 @RaspHandler(
         className = "java.lang.ProcessBuilder",
-        isConstructor = true,
+        methodName = "<init>",
         parameterTypes = {String[].class}
 )
 public class ProcessBuilderHandler {
